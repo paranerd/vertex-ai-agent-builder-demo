@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PDF Uploader</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    #upload-form {
+      width: 300px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="upload-form">
+    <h2>Upload PDF</h2>
+    <form id="pdf-form">
+      <input type="file" id="pdf-file" name="pdfFile" accept=".pdf" required>
+      <br><br>
+      <button type="submit">Upload</button>
+    </form>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('pdf-form');
+    const statusDiv = document.getElementById('status');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault(); 
+      statusDiv.textContent = 'Uploading...';
+
+      const fileInput = document.getElementById('pdf-file');
+      const file = fileInput.files[0];
+
+      const formData = new FormData();
+      formData.append('pdfFile', file);
+
+      try {
+        const response = await fetch('/upload-pdf', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          statusDiv.textContent = 'PDF uploaded successfully!';
+        } else {
+          statusDiv.textContent = 'Error uploading PDF.';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        statusDiv.textContent = 'Error uploading PDF.';
+      }
+    });
+  </script>
+</body>
+</html>
